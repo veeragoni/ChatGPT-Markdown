@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name         New Userscript
+// @name         chatGPT Markdown
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  try to take over the world!
-// @author       You
+// @description  Save the chatGPT Q&A content as a markdown text
+// @author       TripleTre
 // @match        https://chat.openai.com/chat
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=google.com
+// @icon         https://chat.openai.com/favicon-32x32.png
 // @grant        none
 // ==/UserScript==
 
