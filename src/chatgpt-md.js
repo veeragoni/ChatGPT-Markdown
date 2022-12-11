@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         chatGPT Markdown
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Save the chatGPT Q&A content as a markdown text
 // @author       TripleTre
 // @match        https://chat.openai.com/chat
@@ -56,24 +56,27 @@
 
         var elementMap = {
             "P": function (element, result) {
-                let p = replaceInnerNode(element);
+                var p = replaceInnerNode(element);
                 result += markdownEscape(p.textContent, ["codeblocks", "number signs"]);
                 result += `\n\n`;
                 return result;
             },
             "OL": function (element, result) {
-                let ol = replaceInnerNode(element);
+                var ol = replaceInnerNode(element);
+                var olStart = parseInt(ol.getAttribute("start") || "1");
                 Array.from(ol.querySelectorAll("li")).forEach((li, index) => {
-                    result += `${index + 1}. ${markdownEscape(li.textContent, ["codeblocks", "number signs"])}`;
+                    result += `${index + olStart}. ${markdownEscape(li.textContent, ["codeblocks", "number signs"])}`;
                     result += `\n`;
                 });
                 result += `\n\n`;
                 return result;
             },
             "PRE": function (element, result) {
-                var codeBlocks = element.querySelectorAll("code");
-                result += "```\n";
-                Array.from(codeBlocks).forEach(block => {
+                var codeBlocks = Array.from(element.querySelectorAll("code"));
+                var languageMarkedBlock = codeBlocks.find(v => /language-(\w+)/.test(v.getAttribute("class") || ""));
+                var languageMark = languageMarkedBlock.getAttribute("class").match(/language-(\w+)/)[1] || "";
+                result += "```" + languageMark + "\n";
+                codeBlocks.forEach(block => {
                     result += `${block.textContent}`;
                 });
                 result += "```\n";
