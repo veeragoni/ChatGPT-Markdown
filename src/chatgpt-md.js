@@ -88,7 +88,7 @@
 
         var mdContent = chatBlocks.reduce((result, nextBlock, i) => {
             if (i % 2 === 0) { // title
-                result += `#### Prompt Engineer: ${markdownEscape(nextBlock.textContent, ["codeblocks", "number signs"])}`;
+                result += `##### Prompt Engineer: ${markdownEscape(nextBlock.textContent, ["codeblocks", "number signs"])}`;
                 result += `\n\nAI: `;
             } else {
                 var iterator = document.createNodeIterator(
