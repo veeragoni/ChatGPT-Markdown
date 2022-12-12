@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         chatGPT Markdown
+// @name         ChatGPT Markdown
 // @namespace    http://tampermonkey.net/
 // @version      0.2
 // @description  Save the chatGPT Q&A content as a markdown text
-// @author       TripleTre
+// @author       Triple Tre & Suresh
 // @match        https://chat.openai.com/chat
 // @icon         https://chat.openai.com/favicon-32x32.png
 // @grant        none
@@ -88,8 +88,8 @@
 
         var mdContent = chatBlocks.reduce((result, nextBlock, i) => {
             if (i % 2 === 0) { // title
-                result += `## ${markdownEscape(nextBlock.textContent, ["codeblocks", "number signs"])}`;
-                result += `\n\n`;
+                result += `#### Prompt Engineer: ${markdownEscape(nextBlock.textContent, ["codeblocks", "number signs"])}`;
+                result += `\n\nAI: `;
             } else {
                 var iterator = document.createNodeIterator(
                     nextBlock,
@@ -110,15 +110,19 @@
         return mdContent;
     }
 
-    var copyHtml = `<div id="__copy__" style="cursor:pointer;position: fixed;top: 20px;right: 20px;width: 60px;height: 60px;background: #8bc34a;/* border: 1px solid #8bc34a; */border-radius: 50%;color: white;display: flex;justify-content: center;align-items: center;"><span>copy</span></div>`;
+    var copyHtml = `<div id="__copy__" style="cursor:pointer;position: fixed;top: 20px;right: 20px;width: 60px;height: 60px;background: #8bc34a;/* border: 1px solid #8bc34a; */border-radius: 50%;color: white;display: flex;justify-content: center;align-items: center;"><span>Export</span></div>`;
     var copyElement = document.createElement("div");
     document.body.appendChild(copyElement);
     copyElement.outerHTML = copyHtml;
     var copyAnchor = document.getElementById("__copy__");
+
     copyAnchor.addEventListener("click", () => {
         navigator.clipboard.writeText(toMarkdown()).then(() => {
-            alert("done");
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute('download', 'gpt-export.md');
+            downloadAnchor.setAttribute('href', 'data:text/markdown;charset=utf-8,' + encodeURIComponent(toMarkdown()));
+            downloadAnchor.click();
         });
     });
-    console.log(mdContent);
+//     console.log(mdContent);
 })();
